@@ -5,4 +5,13 @@ module.exports = {
         }
         return true;
     },
+    'password': (data) => {
+        const hasUpperCase = /[A-Z]/.test(data);
+        const hasLowerCase = /[a-z]/.test(data);
+        const hasNumbers = /\d/.test(data);
+        const hasNonAlphas = /\W/.test(data);
+        const isLongEnough = data.length >= 8;
+
+        return hasUpperCase && hasLowerCase && hasNumbers && hasNonAlphas && isLongEnough;
+    }
 }
