@@ -1,74 +1,77 @@
-const jwt        = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { nanoid } = require('nanoid');
-const md5        = require('md5');
-
+const md5 = require('md5');
 
 module.exports = class TokenManager {
-    constructor({config}){
-        this.config              = config;
-        this.longTokenExpiresIn  = '3y';
+    constructor({ config }) {
+        this.config = config;
+        this.longTokenExpiresIn = '3y'; //TODO: Shorten these expiry times and put them in the .env file
         this.shortTokenExpiresIn = '1y';
-        this.userExposed         = ['v1_createShortToken']; // exposed functions
+        this.userExposed = this.adminExposed = ['v1_createShortToken']; // exposed functions
     }
 
-    /** 
-     * short token are issue from long token 
-     * short tokens are issued for 72 hours 
+    /**
+     * short token are issue from long token
+     * short tokens are issued for 72 hours
      * short tokens are connected to user-agent
-     * short token are used on the soft logout 
-     * short tokens are used for account switch 
-     * short token represents a device. 
-     * long token represents a single user. 
-     *  
+     * short token are used on the soft logout
+     * short tokens are used for account switch
+     * short token represents a device.
+     * long token represents a single user.
+     *
      * long token contains immutable data and long lived
      * master key must exists on any device to create short tokens
      */
-    genLongToken({userId, userKey}){
+    genLongToken({ userId, userKey }) {
         return jwt.sign(
-            { 
-                userKey, 
+            {
+                userKey,
                 userId,
-            }, 
-            this.config.dotEnv.LONG_TOKEN_SECRET, 
-            {expiresIn: this.longTokenExpiresIn
-        })
+            },
+            this.config.dotEnv.LONG_TOKEN_SECRET,
+            { expiresIn: this.longTokenExpiresIn },
+        );
     }
 
-    genShortToken({userId, userKey, sessionId, deviceId}){
-        return jwt.sign(
-            { userKey, userId, sessionId, deviceId}, 
-            this.config.dotEnv.SHORT_TOKEN_SECRET, 
-            {expiresIn: this.shortTokenExpiresIn
-        })
+    genShortToken({ userId, userKey, sessionId, deviceId }) {
+        return jwt.sign({ userKey, userId, sessionId, deviceId }, this.config.dotEnv.SHORT_TOKEN_SECRET, {
+            expiresIn: this.shortTokenExpiresIn,
+        });
     }
 
-    _verifyToken({token, secret}){
+    _verifyToken({ token, secret }) {
         let decoded = null;
         try {
             decoded = jwt.verify(token, secret);
-        } catch(err) { console.log(err); }
+        } catch (err) {
+            console.log(err);
+        }
         return decoded;
     }
 
-    verifyLongToken({token}){
-        return this._verifyToken({token, secret: this.config.dotEnv.LONG_TOKEN_SECRET,})
-    }
-    
-    verifyShortToken({token}){
-        return this._verifyToken({token, secret: this.config.dotEnv.SHORT_TOKEN_SECRET,})
+    verifyLongToken({ token }) {
+        return this._verifyToken({ token, secret: this.config.dotEnv.LONG_TOKEN_SECRET });
     }
 
+    verifyShortToken({ token }) {
+        return this._verifyToken({ token, secret: this.config.dotEnv.SHORT_TOKEN_SECRET });
+    }
+
+    save;
+
     /** generate shortId based on a longId */
-    v1_createShortToken({__headers, __device}){
+    v1_createShortToken({ __headers, __device }) {
         const token = __headers.token;
-        if(!token)return {error: 'missing token '};
+        if (!token) return { error: 'missing token ' };
         console.log('found token', token);
 
         let decoded = this.verifyLongToken({ token });
-        if(!decoded){ return {error: 'invalid'} };
-        
+        if (!decoded) {
+            return { error: 'invalid' };
+        }
+
         let shortToken = this.genShortToken({
-            userId: decoded.userId, 
+            userId: decoded.userId,
             userKey: decoded.userKey,
             sessionId: nanoid(),
             deviceId: md5(__device),
@@ -76,4 +79,4 @@ module.exports = class TokenManager {
 
         return { shortToken };
     }
-}
+};
