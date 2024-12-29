@@ -1,0 +1,9 @@
+# Add files here to ignore them from prettier formatting
+
+# Generated
+/dist
+
+# Misc
+.tool-versions
+.env
+*.example

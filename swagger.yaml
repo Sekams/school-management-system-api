@@ -1,0 +1,473 @@
+openapi: 3.0.0
+info:
+    title: School Management System API
+    description: API documentation for the School Management System.
+paths:
+    #####################
+    # Auth Endpoints
+    #####################
+    /api/auth/signup:
+        post:
+            tags:
+                - Auth
+            summary: User Signup
+            description: Allows a new user to register by providing their username, password, email, and name.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                email:
+                                    type: string
+                                name:
+                                    type: string
+                            required:
+                                - username
+                                - password
+                                - email
+                                - name
+            responses:
+                '200':
+                    description: User signed up successfully.
+    /api/auth/login:
+        post:
+            tags:
+                - Auth
+            summary: User Login
+            description: Authenticates a user using their username and password.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                            required:
+                                - username
+                                - password
+            responses:
+                '200':
+                    description: User logged in successfully.
+    /api/auth/logout:
+        post:
+            tags:
+                - Auth
+            summary: User Logout
+            description: Logs out the authenticated user, invalidating their session token.
+            responses:
+                '200':
+                    description: User logged out successfully.
+            security:
+                - tokenAuth: []
+    #####################
+    # User Endpoints
+    #####################
+    /api/user/newUser:
+        post:
+            tags:
+                - User
+            summary: Create New User
+            description: Creates a new user account by an authenticated administrator.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                email:
+                                    type: string
+                                name:
+                                    type: string
+                            required:
+                                - username
+                                - password
+                                - email
+                                - name
+            responses:
+                '200':
+                    description: User created successfully.
+            security:
+                - tokenAuth: []
+    /api/user/getUsers:
+        get:
+            tags:
+                - User
+            summary: Get All Users
+            description: Retrieves a list of all users in the system.
+            responses:
+                '200':
+                    description: List of all users.
+            security:
+                - tokenAuth: []
+    /api/user/findUser:
+        get:
+            tags:
+                - User
+            summary: Find User by Username
+            description: Fetches details of a specific user based on their username.
+            parameters:
+                - in: query
+                  name: username
+                  schema:
+                      type: string
+                  required: true
+                  description: Username to search for.
+            responses:
+                '200':
+                    description: User details.
+            security:
+                - tokenAuth: []
+    /api/user/changeUserRole:
+        patch:
+            tags:
+                - User
+            summary: Change User Role
+            description: Updates the role of a specified user.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                role:
+                                    type: string
+                            required:
+                                - username
+                                - role
+            responses:
+                '200':
+                    description: User role updated successfully.
+            security:
+                - tokenAuth: []
+    /api/user/deleteUser:
+        delete:
+            tags:
+                - User
+            summary: Delete User
+            description: Removes a user from the system.
+            responses:
+                '200':
+                    description: User deleted successfully.
+            security:
+                - tokenAuth: []
+    #####################
+    # School Endpoints
+    #####################
+    /api/school/createSchool:
+        post:
+            tags:
+                - School
+            summary: Create School
+            description: Adds a new school to the system with its details and administrators.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                desc:
+                                    type: string
+                                administrators:
+                                    type: array
+                                    items:
+                                        type: string
+                            required:
+                                - name
+                                - desc
+                                - administrators
+            responses:
+                '200':
+                    description: School created successfully.
+            security:
+                - tokenAuth: []
+    /api/school/getSchools:
+        get:
+            tags:
+                - School
+            summary: Get All Schools
+            description: Retrieves a list of all schools available in the system.
+            responses:
+                '200':
+                    description: List of all schools.
+            security:
+                - tokenAuth: []
+    /api/school/findSchool:
+        get:
+            tags:
+                - School
+            summary: Find School by Slug
+            description: Fetches details of a specific school using its slug.
+            parameters:
+                - in: query
+                  name: slug
+                  schema:
+                      type: string
+                  required: true
+                  description: Slug of the school.
+            responses:
+                '200':
+                    description: School details.
+            security:
+                - tokenAuth: []
+    /api/school/updateSchool:
+        patch:
+            tags:
+                - School
+            summary: Update School Details
+            description: Updates the details of a school.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                id:
+                                    type: string
+                                name:
+                                    type: string
+                            required:
+                                - id
+                                - name
+            responses:
+                '200':
+                    description: School updated successfully.
+            security:
+                - tokenAuth: []
+    /api/school/deleteSchool:
+        delete:
+            tags:
+                - School
+            summary: Delete School
+            description: Deletes a specific school from the system.
+            responses:
+                '200':
+                    description: School deleted successfully.
+            security:
+                - tokenAuth: []
+    #####################
+    # Classroom Endpoints
+    #####################
+    /api/classroom/createClassroom:
+        post:
+            tags:
+                - Classroom
+            summary: Create Classroom
+            description: Creates a new classroom within a school.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                capacity:
+                                    type: integer
+                                school:
+                                    type: string
+                                courses:
+                                    type: array
+                                    items:
+                                        type: string
+                                students:
+                                    type: array
+                                    items:
+                                        type: string
+                            required:
+                                - name
+                                - capacity
+                                - school
+            responses:
+                '200':
+                    description: Classroom created successfully.
+            security:
+                - tokenAuth: []
+    /api/classroom/getClassrooms:
+        get:
+            tags:
+                - Classroom
+            summary: Get All Classrooms in a School
+            description: Retrieves a list of classrooms in a specified school.
+            parameters:
+                - in: query
+                  name: school
+                  schema:
+                      type: string
+                  required: true
+                  description: School ID.
+            responses:
+                '200':
+                    description: List of classrooms.
+            security:
+                - tokenAuth: []
+    /api/classroom/findClassroom:
+        get:
+            tags:
+                - Classroom
+            summary: Find Classroom by Slug and School
+            description: Fetches details of a classroom using its slug and school ID.
+            parameters:
+                - in: query
+                  name: slug
+                  schema:
+                      type: string
+                  required: true
+                  description: Slug of the classroom.
+                - in: query
+                  name: school
+                  schema:
+                      type: string
+                  required: true
+                  description: School ID.
+            responses:
+                '200':
+                    description: Classroom details.
+            security:
+                - tokenAuth: []
+    /api/classroom/updateClassroom:
+        patch:
+            tags:
+                - Classroom
+            summary: Update Classroom Details
+            description: Updates the details of a specific classroom.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                id:
+                                    type: string
+                                school:
+                                    type: string
+                                name:
+                                    type: string
+                            required:
+                                - id
+                                - school
+                                - name
+            responses:
+                '200':
+                    description: Classroom updated successfully.
+            security:
+                - tokenAuth: []
+    #####################
+    # Student Endpoints
+    #####################
+    /api/student/enrollStudent:
+        post:
+            tags:
+                - Student
+            summary: Enroll Student in a Classroom
+            description: Adds a student to a classroom along with their course selections.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                user:
+                                    type: string
+                                classroom:
+                                    type: string
+                                courses:
+                                    type: array
+                                    items:
+                                        type: string
+                            required:
+                                - user
+                                - classroom
+                                - courses
+            responses:
+                '200':
+                    description: Student enrolled successfully.
+            security:
+                - tokenAuth: []
+    /api/student/updateStudentProfile:
+        patch:
+            tags:
+                - Student
+            summary: Update Student Profile
+            description: Modifies a student's profile information.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                user:
+                                    type: string
+                                school:
+                                    type: string
+                                capacity:
+                                    type: integer
+                            required:
+                                - user
+                                - school
+            responses:
+                '200':
+                    description: Student profile updated successfully.
+            security:
+                - tokenAuth: []
+    /api/student/transferStudent:
+        patch:
+            tags:
+                - Student
+            summary: Transfer Student to Another Classroom
+            description: Moves a student from one classroom to another.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                user:
+                                    type: string
+                                school:
+                                    type: string
+                                classroom:
+                                    type: string
+                                newClassroom:
+                                    type: string
+                            required:
+                                - user
+                                - school
+                                - classroom
+                                - newClassroom
+            responses:
+                '200':
+                    description: Student transferred successfully.
+            security:
+                - tokenAuth: []
+securitySchemes:
+    tokenAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
