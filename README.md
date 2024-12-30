@@ -45,14 +45,14 @@ npm run dev
 Open the API documentation in the browser at:
 
 ```
-https://soar-sms-api.spssekamatte.com
+https://school-management-system-api-8vo7.onrender.com/
 ```
 
 ## Testing
 
 The API can be tested out easily in the browser without using any 3rd party applications
 
--   Open the app at `https://.soar-sms-api.spssekamatte.com` and use the page to sign up and then login.
+-   Open the app at `https://school-management-system-api-8vo7.onrender.com/` and use the page to sign up and then login.
 -   Copy the `shortToken` returned on successful Login.
 -   Click the "Authorize" button at the top right of the page and paste the token in the input.
 -   You can now test all the endpoints your user has the authorization for by expanding the endpoint and clicking the "Try it out" button
