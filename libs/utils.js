@@ -131,6 +131,17 @@ const isChance = (max) => {
     return min == value;
 };
 
+const consolidateValidations = ({ arr, key, replacements }) => {
+    let result = arr.map((obj) => obj[key]).join(', ');
+
+    if (replacements?.length) {
+        replacements.forEach((replacement) => {
+            result = result.replaceAll(replacement.from, replacement.to);
+        });
+    }
+    return result;
+};
+
 module.exports = {
     slugify,
     getDeepValue,
@@ -144,4 +155,5 @@ module.exports = {
     hrTime,
     match,
     isChance,
+    consolidateValidations,
 };

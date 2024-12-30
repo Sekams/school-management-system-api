@@ -2,6 +2,14 @@ openapi: 3.0.0
 info:
     title: School Management System API
     description: API documentation for the School Management System.
+
+components:
+    securitySchemes:
+        tokenAuth:
+            type: apiKey
+            in: header
+            name: token
+
 paths:
     #####################
     # Auth Endpoints
@@ -30,11 +38,41 @@ paths:
                             required:
                                 - username
                                 - password
-                                - email
-                                - name
             responses:
                 '200':
-                    description: User signed up successfully.
+                    description: User sign up successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            user:
+                                                id: string
+                                                username: string
+                                                email: string
+                                                name: string
+                                                role: string
+                                            longToken: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User sign up failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
     /api/auth/login:
         post:
             tags:
@@ -57,16 +95,80 @@ paths:
                                 - password
             responses:
                 '200':
-                    description: User logged in successfully.
+                    description: User login successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            user:
+                                                id: string
+                                                username: string
+                                                email: string
+                                                name: string
+                                                role: string
+                                            shortToken: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User login failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
     /api/auth/logout:
         post:
             tags:
                 - Auth
             summary: User Logout
             description: Logs out the authenticated user, invalidating their session token.
+            parameters:
+                - in: header
+                  name: token
+                  schema:
+                      type: string
+                  required: true
+                  description: Short token returned on login.
             responses:
                 '200':
-                    description: User logged out successfully.
+                    description: User logout successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User logout failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     #####################
@@ -96,11 +198,41 @@ paths:
                             required:
                                 - username
                                 - password
-                                - email
-                                - name
             responses:
                 '200':
-                    description: User created successfully.
+                    description: User creation successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            user:
+                                                id: string
+                                                username: string
+                                                email: string
+                                                name: string
+                                                role: string
+                                            longToken: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User creation failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/user/getUsers:
@@ -111,7 +243,39 @@ paths:
             description: Retrieves a list of all users in the system.
             responses:
                 '200':
-                    description: List of all users.
+                    description: User list retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            type: array
+                                            items:
+                                                id: string
+                                                username: string
+                                                email: string
+                                                name: string
+                                                role: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User list retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/user/findUser:
@@ -129,7 +293,37 @@ paths:
                   description: Username to search for.
             responses:
                 '200':
-                    description: User details.
+                    description: User retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            id: string
+                                            username: string
+                                            email: string
+                                            name: string
+                                            role: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/user/changeUserRole:
@@ -154,7 +348,37 @@ paths:
                                 - role
             responses:
                 '200':
-                    description: User role updated successfully.
+                    description: User role update successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            id: string
+                                            username: string
+                                            email: string
+                                            name: string
+                                            role: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User role update failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/user/deleteUser:
@@ -163,9 +387,50 @@ paths:
                 - User
             summary: Delete User
             description: Removes a user from the system.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                            required:
+                                - username
             responses:
                 '200':
-                    description: User deleted successfully.
+                    description: User retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            id: string
+                                            username: string
+                                            email: string
+                                            name: string
+                                            role: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: User retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     #####################
@@ -195,10 +460,44 @@ paths:
                             required:
                                 - name
                                 - desc
-                                - administrators
             responses:
                 '200':
                     description: School created successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            desc: string
+                                            administrators:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: School creation failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/school/getSchools:
@@ -209,7 +508,44 @@ paths:
             description: Retrieves a list of all schools available in the system.
             responses:
                 '200':
-                    description: List of all schools.
+                    description: School list retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            type: array
+                                            items:
+                                                _id: string
+                                                slug: string
+                                                name: string
+                                                desc: string
+                                                administrators:
+                                                    type: array
+                                                    items:
+                                                        type: string
+                                                createdAt: string
+                                                updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: School list retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/school/findSchool:
@@ -227,7 +563,42 @@ paths:
                   description: Slug of the school.
             responses:
                 '200':
-                    description: School details.
+                    description: School details retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            desc: string
+                                            administrators:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: School details retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/school/updateSchool:
@@ -247,12 +618,52 @@ paths:
                                     type: string
                                 name:
                                     type: string
+                                desc:
+                                    type: string
+                                administrators:
+                                    type: array
+                                    items:
+                                        type: string
                             required:
                                 - id
-                                - name
             responses:
                 '200':
                     description: School updated successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            desc: string
+                                            administrators:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: School update failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/school/deleteSchool:
@@ -261,9 +672,51 @@ paths:
                 - School
             summary: Delete School
             description: Deletes a specific school from the system.
+            parameters:
+                - in: query
+                  name: slug
+                  schema:
+                      type: string
+                  required: true
+                  description: Slug of the school.
             responses:
                 '200':
                     description: School deleted successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            desc: string
+                                            administrators:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: School deletion failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     #####################
@@ -292,10 +745,6 @@ paths:
                                     type: array
                                     items:
                                         type: string
-                                students:
-                                    type: array
-                                    items:
-                                        type: string
                             required:
                                 - name
                                 - capacity
@@ -303,6 +752,44 @@ paths:
             responses:
                 '200':
                     description: Classroom created successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            capacity:
+                                                type: integer
+                                            school: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            students: []
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Classroom creation failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/classroom/getClassrooms:
@@ -320,7 +807,47 @@ paths:
                   description: School ID.
             responses:
                 '200':
-                    description: List of classrooms.
+                    description: List of classrooms retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            type: array
+                                            items:
+                                                _id: string
+                                                slug: string
+                                                name: string
+                                                capacity:
+                                                    type: integer
+                                                school: string
+                                                courses:
+                                                    type: array
+                                                    items:
+                                                        type: string
+                                                students: []
+                                                createdAt: string
+                                                updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Classroom list retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/classroom/findClassroom:
@@ -344,7 +871,45 @@ paths:
                   description: School ID.
             responses:
                 '200':
-                    description: Classroom details.
+                    description: Classroom details retrieval successful.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            capacity:
+                                                type: integer
+                                            school: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            students: []
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Classroom details retrieval failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/classroom/updateClassroom:
@@ -366,13 +931,56 @@ paths:
                                     type: string
                                 name:
                                     type: string
+                                capacity:
+                                    type: integer
+                                courses:
+                                    type: array
+                                    items:
+                                        type: string
                             required:
                                 - id
                                 - school
-                                - name
             responses:
                 '200':
                     description: Classroom updated successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            slug: string
+                                            name: string
+                                            capacity:
+                                                type: integer
+                                            school: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            students: []
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Classroom update failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     #####################
@@ -402,10 +1010,43 @@ paths:
                             required:
                                 - user
                                 - classroom
-                                - courses
             responses:
                 '200':
                     description: Student enrolled successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            user: string
+                                            classroom: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Student enrollment failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
     /api/student/updateStudentProfile:
@@ -423,16 +1064,54 @@ paths:
                             properties:
                                 user:
                                     type: string
-                                school:
+                                name:
                                     type: string
-                                capacity:
-                                    type: integer
+                                email:
+                                    type: string
+                                courses:
+                                    type: array
+                                    items:
+                                        type: string
                             required:
                                 - user
-                                - school
             responses:
                 '200':
                     description: Student profile updated successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            user: string
+                                            classroom: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Student profile update failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
+
             security:
                 - tokenAuth: []
     /api/student/transferStudent:
@@ -456,6 +1135,10 @@ paths:
                                     type: string
                                 newClassroom:
                                     type: string
+                                courses:
+                                    type: array
+                                    items:
+                                        type: string
                             required:
                                 - user
                                 - school
@@ -464,10 +1147,39 @@ paths:
             responses:
                 '200':
                     description: Student transferred successfully.
+                    content:
+                        application/json:
+                            examples:
+                                success:
+                                    summary: Successful Response
+                                    value:
+                                        ok: boolean
+                                        data:
+                                            _id: string
+                                            user: string
+                                            classroom: string
+                                            courses:
+                                                type: array
+                                                items:
+                                                    type: string
+                                            createdAt: string
+                                            updatedAt: string
+                                        errors: []
+                                        message: string
+                '400 - 499':
+                    description: Student transfer failed.
+                    content:
+                        application/json:
+                            examples:
+                                failure:
+                                    summary: Failure Response
+                                    value:
+                                        ok: boolean
+                                        data: {}
+                                        errors:
+                                            oneOf:
+                                                - [string]
+                                                - string
+                                        message: string
             security:
                 - tokenAuth: []
-securitySchemes:
-    tokenAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT

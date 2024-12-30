@@ -1,16 +1,17 @@
 const bcrypt = require('bcrypt');
-const { query } = require('express');
+const { AUTH_VALIDATION_REPLACEMENTS } = require('../../_common/constants');
 const { nanoid } = require('nanoid');
 
 module.exports = class User {
     constructor({ utils, cache, config, cortex, managers, validators, mongoModels } = {}) {
+        this.utils = utils;
         this.config = config;
         this.cortex = cortex;
         this.validators = validators;
         this.mongoModels = mongoModels;
         this.managers = managers;
         this.usersCollection = 'User';
-        this.adminExposed = [
+        this.userExposed = [
             'post=newUser',
             'get=findUser',
             'patch=changeUserRole',
@@ -71,7 +72,16 @@ module.exports = class User {
     async newUser(userData) {
         // Data validation
         const result = await this.validators.user.newUser(userData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(userData.res, {
+                message: this.utils.consolidateValidations({
+                    arr: result,
+                    key: 'message',
+                    replacements: AUTH_VALIDATION_REPLACEMENTS,
+                }),
+                code: 400,
+            });
+        }
 
         return await this.createUser(userData);
     }
@@ -114,7 +124,12 @@ module.exports = class User {
 
         // Data validation
         const result = await this.validators.user.findUser(__query);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         return await this.getUserByUsername({ username, res });
     }
@@ -124,7 +139,13 @@ module.exports = class User {
 
         // Data validation
         const result = await this.validators.user.changeUserRole(userData);
-        if (result) return result;
+        if (result) {
+            console.log('result', result);
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         // Update Logic
         const user = await this.mongoModels.user.findOne({ username });
@@ -147,7 +168,12 @@ module.exports = class User {
     async deleteUser({ username, res }) {
         // Data validation
         const result = await this.validators.user.findUser({ username });
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const deletedUser = await this.mongoModels.user.findOneAndDelete({ username });
 

@@ -8,13 +8,18 @@ module.exports = class Classroom {
         this.mongoModels = mongoModels;
         this.managers = managers;
         this.classroomsCollection = 'Classroom';
-        this.adminExposed = ['post=createClassroom', 'get=getClassrooms', 'get=findClassroom', 'patch=updateClassroom'];
+        this.userExposed = ['post=createClassroom', 'get=getClassrooms', 'get=findClassroom', 'patch=updateClassroom'];
     }
 
     async createClassroom(classroomData) {
         // Data validation
         const result = await this.validators.classroom.createClassroom(classroomData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(classroomData.res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const { name, capacity, school, courses, res } = classroomData;
 
@@ -42,7 +47,12 @@ module.exports = class Classroom {
     async getClassrooms({ __query, res }) {
         // Data validation
         const result = await this.validators.classroom.getClassrooms(__query);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const classrooms = await this.mongoModels.classroom.find({ school: __query.school });
 
@@ -59,7 +69,12 @@ module.exports = class Classroom {
     async findClassroom({ __query, res }) {
         // Data validation
         const result = await this.validators.classroom.findClassroom(__query);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const classroom = await this.mongoModels.classroom.findOne({ slug: __query.slug, school: __query.school });
 
@@ -82,7 +97,12 @@ module.exports = class Classroom {
     async updateClassroom(classroomData) {
         // Data validation
         const result = await this.validators.classroom.updateClassroom(classroomData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(classroomData.res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const { id, name, capacity, school, newSchool, courses, res } = classroomData;
 

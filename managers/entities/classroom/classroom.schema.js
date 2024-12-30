@@ -2,7 +2,7 @@ module.exports = {
     createClassroom: [
         {
             model: 'name',
-            path: 'classroom.name',
+            path: 'name',
             required: true,
         },
         {
@@ -17,7 +17,7 @@ module.exports = {
         },
         {
             model: 'arrayOfStrings',
-            path: 'classroom.courses',
+            path: 'courses',
             required: false,
         },
     ],
@@ -31,7 +31,7 @@ module.exports = {
     findClassroom: [
         {
             model: 'slug',
-            path: 'classroom.slug',
+            path: 'slug',
             required: true,
         },
         {
@@ -43,7 +43,7 @@ module.exports = {
     updateClassroom: [
         {
             model: 'id',
-            path: 'classroom.id',
+            path: 'id',
             required: true,
         },
         {
@@ -53,7 +53,7 @@ module.exports = {
         },
         {
             model: 'name',
-            path: 'classroom.name',
+            path: 'name',
             required: false,
         },
         {
@@ -68,7 +68,7 @@ module.exports = {
         },
         {
             model: 'arrayOfStrings',
-            path: 'classroom.courses',
+            path: 'courses',
             required: false,
         },
     ],

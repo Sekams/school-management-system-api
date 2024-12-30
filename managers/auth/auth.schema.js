@@ -2,38 +2,41 @@ module.exports = {
     signup: [
         {
             model: 'username',
-            path: 'user.username',
+            path: 'username',
             required: true,
         },
         {
             model: 'email',
-            path: 'user.email',
+            path: 'email',
             required: false,
         },
         {
             model: 'password',
-            path: 'user.password',
+            path: 'password',
             required: true,
         },
         {
             model: 'name',
-            path: 'user.name',
+            path: 'name',
             required: false,
         },
     ],
     login: [
         {
             model: 'username',
+            path: 'username',
             required: true,
         },
         {
             model: 'password',
+            path: 'password',
             required: true,
         },
     ],
     logout: [
         {
             model: 'token',
+            path: 'token',
             required: true,
         },
     ],

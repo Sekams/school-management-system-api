@@ -2,8 +2,6 @@ const MiddlewaresLoader = require('./MiddlewaresLoader');
 const ApiHandler = require('../managers/api/Api.manager');
 const LiveDB = require('../managers/live_db/LiveDb.manager');
 const UserServer = require('../managers/http/UserServer.manager');
-const AdminServer = require('../managers/http/AdminServer.manager');
-const DocsServer = require('../managers/http/DocsServer.manager');
 const ResponseDispatcher = require('../managers/response_dispatcher/ResponseDispatcher.manager');
 const VirtualStack = require('../managers/virtual_stack/VirtualStack.manager');
 const ValidatorsLoader = require('./ValidatorsLoader');
@@ -79,15 +77,12 @@ module.exports = class ManagersLoader {
         /*************************************************************************************************/
         this.managers.mwsExec = new VirtualStack({
             ...{
-                preStack: ['__longToken', '__token', '__device', '__rateLimit', '__query', '__roleAccess', '__headers'],
+                preStack: ['__token', '__device', '__rateLimit', '__query', '__roleAccess', '__headers'],
             },
             ...this.injectable,
         });
         this.managers.userApi = new ApiHandler({ ...this.injectable, ...{ prop: 'userExposed' } });
-        this.managers.adminApi = new ApiHandler({ ...this.injectable, ...{ prop: 'adminExposed' } });
         this.managers.userServer = new UserServer({ config: this.config, managers: this.managers });
-        this.managers.adminServer = new AdminServer({ config: this.config, managers: this.managers });
-        this.managers.docsServer = new DocsServer({ config: this.config });
 
         return this.managers;
     }

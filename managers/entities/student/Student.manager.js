@@ -2,14 +2,14 @@ const _ = require('lodash');
 
 module.exports = class Student {
     constructor({ utils, cache, config, cortex, managers, validators, mongoModels } = {}) {
+        this.utils = utils;
         this.config = config;
         this.cortex = cortex;
         this.validators = validators;
         this.mongoModels = mongoModels;
         this.managers = managers;
         this.studentCollection = 'Student';
-        this.userExposed = ['patch=updateStudentProfile'];
-        this.adminExposed = ['post=enrollStudent', 'patch=transferStudent', 'patch=updateStudentProfile'];
+        this.userExposed = ['post=enrollStudent', 'patch=transferStudent', 'patch=updateStudentProfile'];
     }
 
     _getCoursesEnrolled(selectedCourses = [], availableCourses = []) {
@@ -21,7 +21,12 @@ module.exports = class Student {
     async enrollStudent(studentData) {
         // Data validation
         const result = await this.validators.student.enrollStudent(studentData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(studentData.res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const userDoc = await this.mongoModels.user.findOne({ _id: studentData.user });
 
@@ -78,7 +83,12 @@ module.exports = class Student {
 
         // Data validation
         const result = await this.validators.student.updateStudentProfile(studentData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         let student = await this.mongoModels.student.findOne({ user });
 
@@ -120,7 +130,12 @@ module.exports = class Student {
     async transferStudent(studentData) {
         // Data validation
         const result = await this.validators.student.transferStudent(studentData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(studentData.res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const { user, classroom, newClassroom, courses, __roleAccess, res } = studentData;
 

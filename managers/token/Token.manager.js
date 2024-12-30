@@ -7,11 +7,11 @@ const { token } = require('../_common/schema.models');
 module.exports = class TokenManager {
     constructor({ config, mongoModels }) {
         this.config = config;
-        this.longTokenExpiresIn = '3y'; //TODO: Shorten these expiry times and put them in the .env file
-        this.shortTokenExpiresIn = '1y';
+        this.longTokenExpiresIn = '3y';
+        this.shortTokenExpiresIn = '72h';
         this.mongoModels = mongoModels;
 
-        this.httpExposed = this.userExposed = this.adminExposed = ['v1_createShortToken'];
+        this.userExposed = ['v1_createShortToken'];
     }
 
     /**
@@ -66,6 +66,15 @@ module.exports = class TokenManager {
         return tokenDoc;
     }
 
+    async getValidLongTokenByUserId({ userId }) {
+        return await this.mongoModels.token.findOne({
+            userId,
+            type: 'long',
+            deleted: false,
+            expiresAt: { $gt: new Date() },
+        });
+    }
+
     async deleteToken({ userId, userKey, deviceId, sessionId }) {
         const updatedToken = await this.mongoModels.token.findOne({
             userId,
@@ -80,8 +89,8 @@ module.exports = class TokenManager {
         return { updatedToken };
     }
 
-    genLongToken({ userId, userKey }) {
-        this._saveToken({ userId, userKey, type: 'long', expiresIn: this.longTokenExpiresIn });
+    async genLongToken({ userId, userKey }) {
+        await this._saveToken({ userId, userKey, type: 'long', expiresIn: this.longTokenExpiresIn });
         return jwt.sign(
             {
                 userKey,
@@ -92,8 +101,15 @@ module.exports = class TokenManager {
         );
     }
 
-    genShortToken({ userId, userKey, sessionId, deviceId }) {
-        this._saveToken({ userId, userKey, type: 'short', expiresIn: this.shortTokenExpiresIn, deviceId, sessionId });
+    async genShortToken({ userId, userKey, sessionId, deviceId }) {
+        await this._saveToken({
+            userId,
+            userKey,
+            type: 'short',
+            expiresIn: this.shortTokenExpiresIn,
+            deviceId,
+            sessionId,
+        });
         return jwt.sign({ userKey, userId, sessionId, deviceId }, this.config.dotEnv.SHORT_TOKEN_SECRET, {
             expiresIn: this.shortTokenExpiresIn,
         });
@@ -109,10 +125,10 @@ module.exports = class TokenManager {
         return decoded;
     }
 
-    verifyLongToken({ token }) {
+    async verifyLongToken({ token }) {
         let decoded = this._verifyToken({ token, secret: this.config.dotEnv.LONG_TOKEN_SECRET });
 
-        const isValid = this._validateToken({ userId: decoded.userId, userKey: decoded.userKey, type: 'long' });
+        const isValid = await this._validateToken({ userId: decoded.userId, userKey: decoded.userKey, type: 'long' });
 
         if (!isValid) {
             decoded = null;
@@ -120,10 +136,10 @@ module.exports = class TokenManager {
 
         return decoded;
     }
-    verifyShortToken({ token }) {
+    async verifyShortToken({ token }) {
         let decoded = this._verifyToken({ token, secret: this.config.dotEnv.SHORT_TOKEN_SECRET });
 
-        const isValid = this._validateToken({
+        const isValid = await this._validateToken({
             userId: decoded.userId,
             userKey: decoded.userKey,
             type: 'short',
@@ -139,11 +155,11 @@ module.exports = class TokenManager {
     }
 
     /** generate shortId based on a longId */
-    v1_createShortToken({ __longToken, __device }) {
+    async v1_createShortToken({ __longToken, __device }) {
         let decoded = __longToken;
         // console.log(decoded);
 
-        let shortToken = this.genShortToken({
+        let shortToken = await this.genShortToken({
             userId: decoded.userId,
             userKey: decoded.userKey,
             sessionId: nanoid(),

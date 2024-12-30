@@ -2,17 +2,17 @@ module.exports = {
     createSchool: [
         {
             model: 'name',
-            path: 'school.name',
+            path: 'name',
             required: true,
         },
         {
             model: 'shortDesc',
-            path: 'school.description',
+            path: 'description',
             required: true,
         },
         {
             model: 'arrayOfStrings',
-            path: 'school.administrators',
+            path: 'administrators',
             required: false,
         },
     ],
@@ -26,22 +26,22 @@ module.exports = {
     updateSchool: [
         {
             model: 'id',
-            path: 'school.id',
+            path: 'id',
             required: true,
         },
         {
             model: 'name',
-            path: 'school.name',
+            path: 'name',
             required: false,
         },
         {
             model: 'shortDesc',
-            path: 'school.desc',
+            path: 'desc',
             required: false,
         },
         {
             model: 'arrayOfStrings',
-            path: 'school.administrators',
+            path: 'administrators',
             required: false,
         },
     ],

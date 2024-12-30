@@ -2,36 +2,36 @@ module.exports = {
     newUser: [
         {
             model: 'username',
-            path: 'user.username',
+            path: 'username',
             required: true,
         },
         {
             model: 'email',
-            path: 'user.email',
+            path: 'email',
             required: false,
         },
         {
             model: 'password',
-            path: 'user.password',
+            path: 'password',
             required: true,
         },
         {
             model: 'name',
-            path: 'user.name',
+            path: 'name',
             required: false,
         },
     ],
     findUser: [
         {
             model: 'username',
-            path: 'user.username',
+            path: 'username',
             required: true,
         },
     ],
     changeUserRole: [
         {
             model: 'username',
-            path: 'user.username',
+            path: 'username',
             required: true,
         },
         {

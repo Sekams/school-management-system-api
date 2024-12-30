@@ -7,7 +7,7 @@ module.exports = class TokenManager {
         this.config = config;
         this.longTokenExpiresIn = '3y'; //TODO: Shorten these expiry times and put them in the .env file
         this.shortTokenExpiresIn = '1y';
-        this.userExposed = this.adminExposed = ['v1_createShortToken']; // exposed functions
+        this.userExposed = ['v1_createShortToken']; // exposed functions
     }
 
     /**

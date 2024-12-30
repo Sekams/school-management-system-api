@@ -1,5 +1,5 @@
 module.exports = ({ meta, config, managers }) => {
-    return ({ req, res, next }) => {
+    return async ({ req, res, next }) => {
         const { moduleName, fnName } = req.params;
 
         if (moduleName === 'auth' && ['login', 'signup'].includes(fnName)) {
@@ -12,7 +12,7 @@ module.exports = ({ meta, config, managers }) => {
         }
         let decoded = null;
         try {
-            decoded = managers.token.verifyShortToken({ token: req.headers.token });
+            decoded = await managers.token.verifyShortToken({ token: req.headers.token });
             if (!decoded) {
                 console.log('failed to decode-1');
                 return managers.responseDispatcher.dispatch(res, { ok: false, code: 401, errors: 'unauthorized' });

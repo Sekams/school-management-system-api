@@ -7,7 +7,7 @@ module.exports = class School {
         this.managers = managers;
         this.utils = utils;
         this.schoolsCollection = 'School';
-        this.adminExposed = [
+        this.userExposed = [
             'post=createSchool',
             'get=findSchool',
             'get=getSchools',
@@ -23,7 +23,12 @@ module.exports = class School {
 
         // Data validation
         const result = await this.validators.school.createSchool(schoolData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         let school = await this.mongoModels.school.findOne({ slug });
 
@@ -66,7 +71,12 @@ module.exports = class School {
 
         // Data validation
         const result = await this.validators.school.findSchool(__query);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const school = await this.mongoModels.school.findOne({ slug });
 
@@ -85,7 +95,12 @@ module.exports = class School {
 
         // Data validation
         const result = await this.validators.school.updateSchool(schoolData);
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const school = await this.mongoModels.school.findOne({ _id: id });
 
@@ -109,7 +124,12 @@ module.exports = class School {
     async deleteSchool({ slug, res }) {
         // Data validation
         const result = await this.validators.school.findSchool({ slug });
-        if (result) return result;
+        if (result) {
+            return this.managers.responseDispatcher.dispatch(res, {
+                message: this.utils.consolidateValidations({ arr: result, key: 'message' }),
+                code: 400,
+            });
+        }
 
         const deletedSchool = await this.mongoModels.school.findOneAndDelete({ slug });
 

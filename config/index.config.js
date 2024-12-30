@@ -27,7 +27,7 @@ const BCRYPT_SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS || 10;
 const SUPER_ADMIN_USERNAMES = process.env.SUPER_ADMIN_USERNAMES ? process.env.SUPER_ADMIN_USERNAMES.split(',') : null;
 const RATE_LIMIT_DURATION_IN_MILLISECONDS = process.env.RATE_LIMIT_DURATION_IN_MILLISECONDS || 60000;
 const RATE_LIMIT_MAX_REQUESTS = process.env.RATE_LIMIT_MAX_REQUESTS || 10;
-const DOCS_PORT = process.env.DOCS_PORT || 5333;
+const PORT = process.env.PORT || 3000;
 
 if (!LONG_TOKEN_SECRET || !SHORT_TOKEN_SECRET || !NACL_SECRET || !SUPER_ADMIN_USERNAMES) {
     throw Error('missing .env variables check index.config');
@@ -53,7 +53,7 @@ config.dotEnv = {
     SUPER_ADMIN_USERNAMES,
     RATE_LIMIT_DURATION_IN_MILLISECONDS,
     RATE_LIMIT_MAX_REQUESTS,
-    DOCS_PORT,
+    PORT,
 };
 
 module.exports = config;
