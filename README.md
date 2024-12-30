@@ -12,15 +12,15 @@ The School Management System API provides a comprehensive set of endpoints for m
 
 > Create, retrieve, and manage user accounts. Modify user roles and delete users.
 
-#### School Management (Super admin access only)
+### School Management (Super admin access only)
 
 > Create, retrieve, update, and delete school records.
 
-#### Classroom Management (Super admin and admin access only)
+### Classroom Management (Super admin and admin access only)
 
 > Create, retrieve, update, and manage classrooms within schools.
 
-#### Student Management (Super Admin, admin and limited student Access)
+### Student Management (Super Admin, admin and limited student Access)
 
 > Enroll students in classrooms, update student profiles, and transfer students between classrooms.
 
