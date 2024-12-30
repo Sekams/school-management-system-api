@@ -28,7 +28,7 @@ The School Management System API provides a comprehensive set of endpoints for m
 
 Set up a Redis instance running the latest version of Redis as well as an instance of MongoDB running the latest version as well and copy their respective connection URIs
 
-Create a `.env` file and populate it with the keys in the `.example.env` file with their values set to the desired configs
+Create a `.env` file at the root of the project and populate it with the keys in the `.example.env` file with their values set to the desired configs
 
 Install Dependencies
 
